@@ -20,7 +20,6 @@ import app.aaps.core.interfaces.db.PersistenceLayer
 import app.aaps.core.interfaces.logging.AAPSLogger
 import app.aaps.core.interfaces.logging.LTag
 import app.aaps.core.interfaces.notifications.NotificationManager
-import app.aaps.core.interfaces.plugin.PermissionGroup
 import app.aaps.core.interfaces.plugin.PluginBase
 import app.aaps.core.interfaces.plugin.PluginDescription
 import app.aaps.core.interfaces.profile.ProfileUtil
@@ -88,27 +87,6 @@ class DexcomPlugin(
             pluginDescription.setDefault()
         }
     }
-
-    override fun requiredPermissions(): List<PermissionGroup> =
-        if (isDexcomAppInstalled()) listOf(
-            PermissionGroup(
-                permissions = listOf(PERMISSION),
-                rationaleTitle = TextRef.AndroidRes(R.string.permission_dexcom_title),
-                rationaleDescription = TextRef.AndroidRes(R.string.permission_dexcom_description),
-                special = true,
-            )
-        ) else emptyList()
-
-    private fun isDexcomAppInstalled(): Boolean =
-        PACKAGE_NAMES.any { pkg ->
-            try {
-                @Suppress("DEPRECATION")
-                context.packageManager.getPackageInfo(pkg, 0)
-                true
-            } catch (_: Exception) {
-                false
-            }
-        }
 
     override suspend fun onStart() {
         super.onStart()
